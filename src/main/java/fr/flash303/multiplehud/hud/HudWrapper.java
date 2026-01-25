@@ -52,13 +52,6 @@ public class HudWrapper extends CustomUIHud {
         show();
     }
 
-    public void removeLastCustomHud() {
-        if (this.lastIdentifier != null) {
-            removeCustomHud(this.lastIdentifier);
-            this.lastIdentifier = null;
-        }
-    }
-
     public void removeCustomHud(@NotNull HudIdentifier identifier) {
         this.customHuds.remove(identifier);
         show();
@@ -67,6 +60,7 @@ public class HudWrapper extends CustomUIHud {
     public void update(@NotNull HudIdentifier identifier, boolean clear, @NotNull UICommandBuilder commandBuilder) {
         Objects.requireNonNull(identifier, "identifier");
         Objects.requireNonNull(commandBuilder, "commandBuilder");
+
         CustomUIHud customUIHud = this.customHuds.get(identifier);
         if (customUIHud != null) {
             customUIHud.update(clear, commandBuilder);
