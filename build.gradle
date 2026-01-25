@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'com.gradleup.shadow' version '8.3.6'
+    id 'maven-publish'
 }
 
 group = 'fr.flash303.hytale'
@@ -28,4 +29,12 @@ java {
 
 shadowJar {
     archiveClassifier.set("")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
