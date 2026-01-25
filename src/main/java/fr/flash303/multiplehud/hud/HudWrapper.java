@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,26 +31,20 @@ public class HudWrapper extends CustomUIHud {
     }
 
     private final Map<HudIdentifier, CustomUIHud> customHuds = new ConcurrentHashMap<>();
-    private HudIdentifier lastIdentifier = null;
 
     public HudWrapper(@NotNull PlayerRef playerRef) {
         super(playerRef);
     }
 
-    public void addCustomHud(HudIdentifier identifier, CustomUIHud customUIHud) {
+    public void addCustomHud(@NotNull HudIdentifier identifier, @NotNull CustomUIHud customUIHud) {
+        Objects.requireNonNull(identifier, "identifier cannot be null");
+        Objects.requireNonNull(customUIHud, "customUIHud cannot be null");
         this.customHuds.put(identifier, customUIHud);
-        this.lastIdentifier = identifier;
         show();
     }
 
-    public void removeLastCustomHud() {
-        if (this.lastIdentifier != null) {
-            removeCustomHud(this.lastIdentifier);
-            this.lastIdentifier = null;
-        }
-    }
-
-    public void removeCustomHud(HudIdentifier identifier) {
+    public void removeCustomHud(@NotNull HudIdentifier identifier) {
+        Objects.requireNonNull(identifier, "identifier cannot be null");
         this.customHuds.remove(identifier);
         show();
     }
