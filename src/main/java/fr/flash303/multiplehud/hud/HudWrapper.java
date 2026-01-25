@@ -6,7 +6,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import fr.flash303.multiplehud.identifier.HudIdentifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Method;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -18,16 +20,23 @@ import java.util.logging.Logger;
  * @date 25/01/2026 10:35
  */
 public class HudWrapper extends CustomUIHud {
-    private static Method BUILD_METHOD;
+    private static final MethodHandle BUILD_HANDLE;
 
     static {
+        MethodHandle handle = null;
         try {
-            BUILD_METHOD = CustomUIHud.class.getDeclaredMethod("build", UICommandBuilder.class);
-            BUILD_METHOD.setAccessible(true);
-        } catch (NoSuchMethodException var1) {
-            BUILD_METHOD = null;
-        }
+            MethodHandles.Lookup lookup =
+                    MethodHandles.privateLookupIn(CustomUIHud.class, MethodHandles.lookup());
+
+            handle = lookup.findVirtual(
+                    CustomUIHud.class,
+                    "build",
+                    MethodType.methodType(void.class, UICommandBuilder.class)
+            );
+        } catch (NoSuchMethodException | IllegalAccessException ignored) {}
+        BUILD_HANDLE = handle;
     }
+
 
     private final Map<HudIdentifier, CustomUIHud> customHuds = new ConcurrentHashMap<>();
     private HudIdentifier lastIdentifier = null;
@@ -54,18 +63,26 @@ public class HudWrapper extends CustomUIHud {
         show();
     }
 
+    public void update(HudIdentifier identifier, boolean clear, @NotNull UICommandBuilder commandBuilder) {
+        CustomUIHud customUIHud = this.customHuds.get(identifier);
+        if (customUIHud != null) {
+            customUIHud.update(clear, commandBuilder);
+        }
+    }
+
     @Override
     protected void build(@NotNull UICommandBuilder uiCommandBuilder) {
+        if (BUILD_HANDLE == null) return;
+
         for (Map.Entry<HudIdentifier, CustomUIHud> entry : customHuds.entrySet()) {
-            if (BUILD_METHOD != null) {
-                try {
-                    BUILD_METHOD.invoke(entry.getValue(), uiCommandBuilder);
-                } catch (Exception e) {
-                    Logger.getGlobal().log(Level.SEVERE, "Failed to build custom HUD: " + entry.getValue().getClass().getName(), e);
-                }
+            try {
+                BUILD_HANDLE.invoke(entry.getValue(), uiCommandBuilder);
+            } catch (Throwable t) {
+                Logger.getGlobal().log(Level.SEVERE, "Failed to build custom HUD: " + entry.getValue().getClass().getName(), t);
             }
         }
     }
+
 
     @Override
     public void update(boolean clear, @NotNull UICommandBuilder commandBuilder) {
