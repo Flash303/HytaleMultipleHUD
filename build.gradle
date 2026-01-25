@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.6'
+}
+
+group = 'fr.flash303.hytale'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "hytale-release"
+        url = uri("https://maven.hytale.com/release")
+    }
+}
+
+dependencies {
+    compileOnly("com.hypixel.hytale:Server:2026.01.24-6e2d4fc36")
+    compileOnly("org.jetbrains:annotations:24.1.0")
+}
+
+shadowJar {
+    archiveClassifier.set("")
+}
