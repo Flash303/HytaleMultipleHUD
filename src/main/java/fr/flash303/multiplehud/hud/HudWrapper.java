@@ -63,13 +63,6 @@ public class HudWrapper extends CustomUIHud {
         show();
     }
 
-    public void update(HudIdentifier identifier, boolean clear, @NotNull UICommandBuilder commandBuilder) {
-        CustomUIHud customUIHud = this.customHuds.get(identifier);
-        if (customUIHud != null) {
-            customUIHud.update(clear, commandBuilder);
-        }
-    }
-
     @Override
     protected void build(@NotNull UICommandBuilder uiCommandBuilder) {
         if (BUILD_HANDLE == null) return;
