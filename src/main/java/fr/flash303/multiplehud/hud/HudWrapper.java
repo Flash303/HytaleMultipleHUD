@@ -58,8 +58,8 @@ public class HudWrapper extends CustomUIHud {
     }
 
     public void update(@NotNull HudIdentifier identifier, boolean clear, @NotNull UICommandBuilder commandBuilder) {
-        Objects.requireNonNull(identifier, "identifier");
-        Objects.requireNonNull(commandBuilder, "commandBuilder");
+        Objects.requireNonNull(identifier, "identifier cannot be null");
+        Objects.requireNonNull(commandBuilder, "commandBuilder cannot be null");
 
         CustomUIHud customUIHud = this.customHuds.get(identifier);
         if (customUIHud != null) {
