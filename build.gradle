@@ -20,6 +20,12 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.1.0")
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
 shadowJar {
     archiveClassifier.set("")
 }
