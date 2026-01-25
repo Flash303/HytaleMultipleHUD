@@ -10,6 +10,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +46,7 @@ public class HudWrapper extends CustomUIHud {
         super(playerRef);
     }
 
-    public void addCustomHud(HudIdentifier identifier, CustomUIHud customUIHud) {
+    public void addCustomHud(@NotNull HudIdentifier identifier, @NotNull CustomUIHud customUIHud) {
         this.customHuds.put(identifier, customUIHud);
         this.lastIdentifier = identifier;
         show();
@@ -58,12 +59,14 @@ public class HudWrapper extends CustomUIHud {
         }
     }
 
-    public void removeCustomHud(HudIdentifier identifier) {
+    public void removeCustomHud(@NotNull HudIdentifier identifier) {
         this.customHuds.remove(identifier);
         show();
     }
 
-    public void update(HudIdentifier identifier, boolean clear, @NotNull UICommandBuilder commandBuilder) {
+    public void update(@NotNull HudIdentifier identifier, boolean clear, @NotNull UICommandBuilder commandBuilder) {
+        Objects.requireNonNull(identifier, "identifier");
+        Objects.requireNonNull(commandBuilder, "commandBuilder");
         CustomUIHud customUIHud = this.customHuds.get(identifier);
         if (customUIHud != null) {
             customUIHud.update(clear, commandBuilder);
