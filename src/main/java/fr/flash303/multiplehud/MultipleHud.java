@@ -62,10 +62,12 @@ public class MultipleHud {
         }
     }
 
-    public static void removeCustomHud(final Player player,
-                                       final HudIdentifier identifier) {
-        final CustomUIHud currentHud = player.getHudManager().getCustomHud();
+    public static void removeCustomHud(@NotNull Player player,
+                                       @NotNull HudIdentifier identifier) {
+        Objects.requireNonNull(player, "player cannot be null");
+        Objects.requireNonNull(identifier, "identifier cannot be null");
 
+        final CustomUIHud currentHud = player.getHudManager().getCustomHud();
         if (currentHud instanceof HudWrapper wrapper) {
             wrapper.removeCustomHud(identifier);
         }
